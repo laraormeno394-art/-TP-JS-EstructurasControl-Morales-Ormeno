@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TP N°1 Estructuras condicionales</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="contenedor">
+      <h1>Estructuras condicionales en JavaScript</h1>
+      <p>Trabajo práctico N°1, con 10 ejercicios. Elija uno y presione Ejecutar: el programa le pedirá los datos en ventanas prompt().</p>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <ol class="lista" id="lista"></ol>
+
+    <section class="consola">
+      <h2>Resultado en consola</h2>
+      <pre id="salida" aria-live="polite"></pre>
+    </section>
+  </main>
+
+  <script>
+    const ejercicios = [
+      ['Control de acceso por rol', 'alert()'],
+      ['Cotizador de seguro automotor', 'alert()'],
+      ['Liquidación de sueldos', 'console.log()'],
+      ['Tarifa de viaje', 'alert()'],
+      ['Categoría de Monotributo', 'alert()'],
+      ['Scoring crediticio', 'alert()'],
+      ['Cajero automático', 'alert()'],
+      ['Descuentos de e-commerce', 'console.log()'],
+      ['Triaje de urgencias', 'alert()'],
+      ['Conversor de divisas', 'console.log()'],
+    ];
+
+    const lista = document.getElementById('lista');
+    const salida = document.getElementById('salida');
+
+   
+    const consoleLogOriginal = console.log.bind(console);
+    console.log = (...datos) => {
+      consoleLogOriginal(...datos);
+      salida.textContent += datos.join(' ') + '\n';
+    };
+
+    function ejecutarEjercicio(numero) {
+      const nombre = `ejercicio${String(numero).padStart(2, '0')}`;
+      salida.textContent = '';
+      if (typeof window[nombre] === 'function') {
+        window[nombre](); 
+      } else {
+        const script = document.createElement('script');
+        script.src = `js/${nombre}.js`; 
+        script.onerror = () => alert(`No se pudo cargar js/${nombre}.js`);
+        document.body.appendChild(script);
+      }
+    }
+
+    ejercicios.forEach(([titulo, tipoSalida], indice) => {
+      const numero = indice + 1;
+      const luminosidad = 82 - indice * 5; 
+      const item = document.createElement('li');
+      item.innerHTML = `
+        <span class="chip">${numero}</span>
+        <span class="nombre">${titulo}<span class="tipo-salida">${tipoSalida}</span></span>
+        <button type="button" aria-label="Ejecutar ejercicio ${numero}">Ejecutar</button>`;
+      const chip = item.querySelector('.chip');
+      chip.style.background = `hsl(262 62% ${luminosidad}%)`;
+      chip.style.color = luminosidad > 55 ? '#2a1360' : '#fff';
+      item.querySelector('button').addEventListener('click', () => ejecutarEjercicio(numero));
+      lista.appendChild(item);
+    });
+  </script>
+</body>
+</html>
